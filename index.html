@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elunara Beauty — Theme Dev Roadmap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #FAF3E1;
+      --beige: #F5E7C6;
+      --orange: #FA8112;
+      --dark: #222222;
+      --muted: #888;
+      --done-bg: #f0f7ee;
+      --done-border: #b6d9b0;
+      --done-text: #4a7c59;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      padding: 60px 24px;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .site-header__eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .site-header__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--dark);
+    }
+
+    .site-header__title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+
+    .site-header__subtitle {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Progress Bar ── */
+    .progress-wrap {
+      max-width: 600px;
+      margin: 32px auto 0;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background-color: var(--beige);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-bar__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--orange), #f5a623);
+      border-radius: 99px;
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ── Layout ── */
+    .roadmap {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ── Phase Label ── */
+    .phase-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 24px 0 8px;
+      border-top: 1px solid var(--beige);
+      margin-top: 12px;
+    }
+
+    .phase-label:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    /* ── Card ── */
+    .card {
+      background-color: #fff;
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      transform: translateY(-1px);
+    }
+
+    .card.is-done {
+      background-color: var(--done-bg);
+      border-color: var(--done-border);
+    }
+
+    /* ── Card Header ── */
+    .card__header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .card__checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .card.is-done .card__checkbox {
+      background-color: var(--done-text);
+      border-color: var(--done-text);
+    }
+
+    .card__checkbox svg {
+      width: 12px;
+      height: 12px;
+      stroke: white;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .card.is-done .card__checkbox svg {
+      opacity: 1;
+    }
+
+    .card__info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card.is-done .card__title {
+      color: var(--done-text);
+      text-decoration: line-through;
+      text-decoration-color: var(--done-border);
+    }
+
+    .card__badge {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background-color: var(--beige);
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .card.is-done .card__badge {
+      background-color: var(--done-border);
+      color: var(--done-text);
+    }
+
+    .card__files {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 3px;
+      font-family: 'DM Mono', monospace;
+      font-family: monospace;
+    }
+
+    .card__toggle {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .card__toggle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .card.is-open .card__toggle {
+      transform: rotate(180deg);
+    }
+
+    /* ── Card Body ── */
+    .card__body {
+      display: none;
+      padding: 0 24px 20px 62px;
+    }
+
+    .card.is-open .card__body {
+      display: block;
+    }
+
+    .card__note {
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: #555;
+      margin-bottom: 14px;
+    }
+
+    .card__tasks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card__task {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    .card__task::before {
+      content: '→';
+      color: var(--orange);
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 0.75rem;
+    }
+
+    .card__file-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .file-tag {
+      font-size: 0.7rem;
+      font-family: monospace;
+      background-color: var(--beige);
+      color: var(--dark);
+      padding: 3px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+    }
+
+    .card.is-done .file-tag {
+      background-color: var(--done-border);
+      color: var(--done-text);
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      text-align: center;
+      margin-top: 80px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .site-footer span {
+      color: var(--orange);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      body { padding: 40px 16px; }
+      .card__body { padding-left: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <p class="site-header__eyebrow">Shopify Theme Development</p>
+    <h1 class="site-header__title">Elunara <em>Beauty</em><br>Roadmap</h1>
+    <p class="site-header__subtitle">Track your progress — click a card to expand, check to mark done</p>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progress</span>
+        <span id="progress-text">0 / 0 completed</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-bar__fill" id="progress-fill" style="width: 0%"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Roadmap -->
+  <main class="roadmap" id="roadmap">
+
+    <!-- Phase 1 -->
+    <p class="phase-label">Phase 1 — Foundation</p>
+
+    <div class="card" data-id="locales">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Locales <span class="card__badge">Translation Keys</span></div>
+          <div class="card__files">locales/en.default.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Translation keys power all text labels in the customizer. Every setting label, option name and UI text lives here.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Add all general, labels and options keys</li>
+          <li class="card__task">Add cart, search, password, 404 text strings</li>
+          <li class="card__task">Make sure t: keys match settings_schema.json</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">locales/en.default.json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="settings-schema">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Settings Schema <span class="card__badge">Customizer</span></div>
+          <div class="card__files">config/settings_schema.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Defines every setting available in Theme Settings — colors, fonts, spacing, buttons, nav and footer. Every id here becomes a settings.id variable.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Add typography settings (primary + secondary font)</li>
+          <li class="card__task">Add color settings with Elunara brand defaults</li>
+          <li class="card__task">Add button, navigation and footer settings</li>
+          <li class="card__task">Set brand colors: #FAF3E1 #222222 #FA8112 #F5E7C6</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">config/settings_schema.json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="css-variables">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">CSS Variables <span class="card__badge">Design System</span></div>
+          <div class="card__files">snippets/css-variables.liquid</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Bridges the customizer settings to CSS. Outputs all values as :root CSS variables including spacing scale and typography scale.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Map all settings to --color- variables</li>
+          <li class="card__task">Add spacing scale: --space-xs through --space-2xl</li>
+          <li class="card__task">Add typography scale: --text-sm through --text-5xl</li>
+          <li class="card__task">Load both primary and secondary fonts</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">snippets/css-variables.liquid</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <p class="phase-label">Phase 2 — Global Sections</p>
+
+    <div class="card" data-id="header">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Header <span class="card__badge">Global</span></div>
+          <div class="card__files">sections/header.liquid + sections/header-group.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Sticky header that appears on every page. Desktop shows logo + nav + icons. Mobile shows hamburger left, logo center, cart+account right.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Logo — text based, uppercase, links to home</li>
+          <li class="card__task">Desktop nav with dropdown support + chevron toggle</li>
+          <li class="card__task">Search, Account, Cart icons with SVGs</li>
+          <li class="card__task">Mobile hamburger → X animation</li>
+          <li class="card__task">Mobile menu with child link accordion</li>
+          <li class="card__task">Click outside to close all menus</li>
+          <li class="card__task">Fix header-group.json sync issue</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/header.liquid</span>
+          <span class="file-tag">sections/header-group.json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="footer">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Footer <span class="card__badge">Global</span></div>
+          <div class="card__files">sections/footer.liquid + sections/footer-group.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Dark footer that appears on every page. Contains brand info, nav links, social links and copyright. Uses --color-footer-background and --color-footer-text.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Brand name + tagline on left</li>
+          <li class="card__task">Navigation links column</li>
+          <li class="card__task">Social media icons</li>
+          <li class="card__task">Copyright line at bottom</li>
+          <li class="card__task">Mobile stacked layout</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/footer.liquid</span>
+          <span class="file-tag">sections/footer-group.json</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <p class="phase-label">Phase 3 — Homepage</p>
+
+    <div class="card" data-id="hero">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Hero Section <span class="card__badge">Homepage</span></div>
+          <div class="card__files">sections/hello-world.liquid + templates/index.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Full screen hero with background image, overlay, title, subtitle, description and Shop Now button. Image falls back to assets/hero-image.jpg if no customizer image set.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Add hero-image.jpg to assets/ folder</li>
+          <li class="card__task">Full screen image with overlay opacity control</li>
+          <li class="card__task">Title, subtitle, description all editable from customizer</li>
+          <li class="card__task">Shop Now button with arrow animation</li>
+          <li class="card__task">Text position: left / center / right</li>
+          <li class="card__task">Fix red lines syntax error in file</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/hello-world.liquid</span>
+          <span class="file-tag">assets/hero-image.jpg</span>
+          <span class="file-tag">templates/index.json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="product-grid">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Featured Products <span class="card__badge">Homepage</span></div>
+          <div class="card__files">sections/ (new section) + templates/index.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Product grid section for the homepage showing featured products from a selected collection. 4 columns desktop, 2 mobile.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Create sections/featured-products.liquid</li>
+          <li class="card__task">Collection picker in schema</li>
+          <li class="card__task">Product card with image, title, price</li>
+          <li class="card__task">Add section to templates/index.json</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/featured-products.liquid</span>
+          <span class="file-tag">templates/index.json</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 4 -->
+    <p class="phase-label">Phase 4 — Core Pages</p>
+
+    <div class="card" data-id="collection">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Collection Page <span class="card__badge">Page</span></div>
+          <div class="card__files">sections/collection.liquid + templates/collection.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Product browsing page at /collections/all or /collections/name. Shows collection title, description and product grid with filters.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Collection title + description header</li>
+          <li class="card__task">Product grid — 4 col desktop, 2 col mobile</li>
+          <li class="card__task">Product cards with image, title, price</li>
+          <li class="card__task">Pagination for large collections</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/collection.liquid</span>
+          <span class="file-tag">templates/collection.json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="product">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Product Page <span class="card__badge">Page</span></div>
+          <div class="card__files">sections/product.liquid + templates/product.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">The most important page — where customers decide to buy. Image gallery left, product details right. Variants, quantity, Add to Cart, description.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Product image gallery</li>
+          <li class="card__task">Title, price, variant selector</li>
+          <li class="card__task">Quantity input + Add to Cart button</li>
+          <li class="card__task">Product description</li>
+          <li class="card__task">Trust badges row</li>
+          <li class="card__task">Related products section below</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/product.liquid</span>
+          <span class="file-tag">templates/product.json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="cart">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Cart Page <span class="card__badge">Page</span></div>
+          <div class="card__files">sections/cart.liquid + templates/cart.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Cart page at /cart. Two column layout — items left, order summary right. Empty state when no items. Quantity controls and remove links.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Cart items list with image, title, variant, price</li>
+          <li class="card__task">Quantity +/- buttons with auto-submit</li>
+          <li class="card__task">Remove link per item</li>
+          <li class="card__task">Order summary panel with checkout button</li>
+          <li class="card__task">Empty cart state with Shop Now CTA</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/cart.liquid</span>
+          <span class="file-tag">templates/cart.json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="search">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Search Page <span class="card__badge">Page</span></div>
+          <div class="card__files">sections/search.liquid + templates/search.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Search results page at /search. Styled search bar, results grid and empty state when no results found.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Styled search input with icon + submit button</li>
+          <li class="card__task">Results grid — 4 col desktop, 2 col mobile</li>
+          <li class="card__task">Result cards with image, title, price</li>
+          <li class="card__task">Empty state with back to home link</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/search.liquid</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 5 -->
+    <p class="phase-label">Phase 5 — Supporting Pages</p>
+
+    <div class="card" data-id="404">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">404 Page <span class="card__badge">Page</span></div>
+          <div class="card__files">sections/404.liquid + templates/404.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Page not found. Shows when a URL doesn't exist. Should be branded and helpful with a link back home.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Big 404 number display</li>
+          <li class="card__task">Friendly message</li>
+          <li class="card__task">Back to home button</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/404.liquid</span>
+          <span class="file-tag">templates/404.json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="page">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Generic Page <span class="card__badge">Page</span></div>
+          <div class="card__files">sections/page.liquid + templates/page.json</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Used for About, Contact, FAQ, Privacy Policy etc. Content is written in Shopify Admin → Pages. Template just styles the title and renders the page content.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Centered page title</li>
+          <li class="card__task">Styled page content area</li>
+          <li class="card__task">Create About and Contact pages in Admin</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/page.liquid</span>
+          <span class="file-tag">templates/page.json</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="blog">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Blog + Article <span class="card__badge">Page</span></div>
+          <div class="card__files">sections/blog.liquid + sections/article.liquid</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Blog listing page at /blogs/news and single article page at /blogs/news/article-handle. Great for SEO and brand building.</p>
+        <ul class="card__tasks">
+          <li class="card__task">Blog listing — article cards grid</li>
+          <li class="card__task">Article page — title, date, author, content</li>
+          <li class="card__task">Add 2-3 sample blog posts in Admin</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">sections/blog.liquid</span>
+          <span class="file-tag">sections/article.liquid</span>
+          <span class="file-tag">templates/blog.json</span>
+          <span class="file-tag">templates/article.json</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 6 -->
+    <p class="phase-label">Phase 6 — Launch</p>
+
+    <div class="card" data-id="github">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Push to GitHub <span class="card__badge">Deploy</span></div>
+          <div class="card__files">git commands in terminal</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">Push all theme files to GitHub for version control and deployment. Connect GitHub to Shopify for auto-deploy on every push.</p>
+        <ul class="card__tasks">
+          <li class="card__task">git init (if not done)</li>
+          <li class="card__task">git add . && git commit -m "Initial theme"</li>
+          <li class="card__task">Create repo on GitHub and push</li>
+          <li class="card__task">Connect GitHub to Shopify store</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">git push origin main</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-id="publish">
+      <div class="card__header">
+        <div class="card__checkbox" onclick="toggleDone(event, this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5,6 4.5,9 10.5,3"/>
+          </svg>
+        </div>
+        <div class="card__info">
+          <div class="card__title">Publish Theme 🚀 <span class="card__badge">Live</span></div>
+          <div class="card__files">Shopify Admin → Themes → Publish</div>
+        </div>
+        <div class="card__toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="card__body">
+        <p class="card__note">The final step! Once all pages look great, publish the Elunara theme to make it live. Horizon will be replaced. This is the moment! 🎉</p>
+        <ul class="card__tasks">
+          <li class="card__task">Test all pages on mobile and desktop</li>
+          <li class="card__task">Add real products with images</li>
+          <li class="card__task">Set up navigation menus in Admin</li>
+          <li class="card__task">shopify theme push --store elunara-beauty.myshopify.com</li>
+          <li class="card__task">Admin → Themes → Elunara → Publish</li>
+        </ul>
+        <div class="card__file-tags">
+          <span class="file-tag">shopify theme push</span>
+          <span class="file-tag">Admin → Themes → Publish</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    Built with 💛 for <span>Elunara Beauty</span> — Keep going, you're doing amazing!
+  </footer>
+
+  <script>
+    // ── Load saved state ──
+    const saved = JSON.parse(localStorage.getItem('elunara-roadmap') || '{}');
+
+    document.querySelectorAll('.card').forEach(card => {
+      const id = card.dataset.id;
+      if (saved[id]) card.classList.add('is-done');
+    });
+
+    updateProgress();
+
+    // ── Toggle card open/close ──
+    document.querySelectorAll('.card__header').forEach(header => {
+      header.addEventListener('click', (e) => {
+        if (e.target.closest('.card__checkbox')) return;
+        const card = header.closest('.card');
+        card.classList.toggle('is-open');
+      });
+    });
+
+    // ── Toggle done ──
+    function toggleDone(e, checkbox) {
+      e.stopPropagation();
+      const card = checkbox.closest('.card');
+      card.classList.toggle('is-done');
+
+      const id = card.dataset.id;
+      const state = JSON.parse(localStorage.getItem('elunara-roadmap') || '{}');
+      state[id] = card.classList.contains('is-done');
+      localStorage.setItem('elunara-roadmap', JSON.stringify(state));
+
+      updateProgress();
+    }
+
+    // ── Update progress bar ──
+    function updateProgress() {
+      const total = document.querySelectorAll('.card').length;
+      const done = document.querySelectorAll('.card.is-done').length;
+      const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-text').textContent = `${done} / ${total} completed`;
+    }
+  </script>
+
+</body>
+</html>
